@@ -1,6 +1,7 @@
 export * from './auth/Login';
 export * from './auth/Register';
 export * from './home/Home';
+export * from './home/SymptomsExpand';
 export * from './chat/ChatLobby';
 export * from './chat/ChatLobby/SearchDoctor';
 export * from './medicine/Medicine';

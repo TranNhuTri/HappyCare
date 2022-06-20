@@ -2,8 +2,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Home, Medicine } from '../screens';
-// import HomeNavigation from './home.navigation';
+import { Medicine } from '../screens';
+import HomeNavigation from './home';
 import ChatNavigation from './chat';
 // import MedicineNavigation from './medicine.navigation';
 import ProfileNavigation from './profile';
@@ -29,8 +29,8 @@ const BottomTabNavigation = () => (
     })}
   >
     <Tab.Screen
-      name={ScreenName.home}
-      component={Home}
+      name={ScreenName.homeNavigation}
+      component={HomeNavigation}
       options={{
         headerShown: false,
         tabBarLabel: 'Trang chủ',

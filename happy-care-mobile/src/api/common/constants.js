@@ -23,10 +23,12 @@ export const ScreenName = Object.freeze({
 
   bottomTab: 'bottomTab',
 
+  homeNavigation: 'homeNavigation',
   chatNavigation: 'chatNavigation',
   profileNavigation: 'profileNavigation',
 
   home: 'home',
+  symptomsExpand: 'symptomsExpand',
 
   chatLobby: 'chatLobby',
   searchDoctor: 'searchDoctor',

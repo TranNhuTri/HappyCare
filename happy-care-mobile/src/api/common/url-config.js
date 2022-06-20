@@ -6,3 +6,4 @@ export const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CloudinaryCloud
 
 export const UserUrl = `${BASE_URL_V1}/users`;
 export const AdminUrl = `${BASE_URL_V1}/admin`;
+export const SymptomsURL = `${BASE_URL_V1}/symptom-keyword`;
