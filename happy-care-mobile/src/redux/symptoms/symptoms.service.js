@@ -8,18 +8,19 @@ class SymptomsService {
     if (!this.instance) {
       this.instance = new SymptomsService();
     }
-
     return this.instance;
   }
 
-  async getNews() {
+  async getSymptoms() {
     try {
       const url = `${SymptomsURL}`;
-      const res = await httpService.get(url, null);
+      const params = null;
+      const res = await httpService.get(url, params);
       if (res.success) {
+        const symptoms = res.data.keywords;
         store.dispatch(
-          symptomsAction.getSymptoms({
-            symptoms: res.data.keywords,
+          symptomsAction.setSymptoms({
+            symptoms,
           })
         );
       }

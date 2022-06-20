@@ -15,9 +15,8 @@ import {
 } from 'native-base';
 import { FontAwesome } from '@expo/vector-icons';
 import { uiActions } from '../../../redux/actions';
-import { userService } from '../../../redux/services';
+import { userService, symptomsService } from '../../../redux/services';
 import { ScreenName } from '../../../api/common';
-import { httpService } from '../../../api/services';
 // import { socketService } from '../../../api/services';
 
 export const SymptomsKeyword = ({ navigation }) => {
@@ -27,7 +26,11 @@ export const SymptomsKeyword = ({ navigation }) => {
   const [isShowGreat, setIsShowGreat] = useState(false);
   const [isShowNotGreat, setIsShowNotGreat] = useState(false);
   const [symptomSelected, setSymptomsSelected] = useState([]);
-  const [symptomsList, setSymptomsList] = useState([]);
+  const { symptoms } = useSelector((state) => state.symptoms);
+
+  useEffect(() => {
+    symptomsService.getSymptoms();
+  }, []);
 
   useEffect(() => {
     if (currentScreen !== ScreenName.home) {
@@ -42,27 +45,6 @@ export const SymptomsKeyword = ({ navigation }) => {
     setUserInfoById();
   }, [dispatch]);
 
-  const fetchSymptoms = () => {
-    httpService
-      .get('api/symptom-keyword', null, true)
-      .then((res) => {
-        if (res.data) {
-          setSymptomsList(res.data.keywords);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  useEffect(() => {
-    fetchSymptoms();
-
-    return () => {
-      setSymptomsList([]);
-    };
-  }, []);
-
   const handlerButtonClick = (answer) => {
     setIsShowQuestion(false);
     if (answer === true) {
@@ -74,8 +56,8 @@ export const SymptomsKeyword = ({ navigation }) => {
 
   const itemHandler = (id) => {
     if (symptomSelected.includes(id)) {
-      const symptoms = symptomSelected.filter((item) => item !== id);
-      setSymptomsSelected(symptoms);
+      const symptomsList = symptomSelected.filter((item) => item !== id);
+      setSymptomsSelected(symptomsList);
     } else if (symptomSelected.length < 3) {
       setSymptomsSelected([...symptomSelected, id]);
     }
@@ -186,7 +168,7 @@ export const SymptomsKeyword = ({ navigation }) => {
             <FlatList
               p="4"
               horizontal
-              data={symptomsList}
+              data={symptoms}
               keyExtractor={(item) => item._id}
               renderItem={({ item }) => (
                 <Pressable

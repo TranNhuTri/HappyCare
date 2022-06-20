@@ -3,34 +3,17 @@ import { FlatList, Text, VStack, Pressable, Button } from 'native-base';
 import { useDispatch, useSelector } from 'react-redux';
 import { uiActions } from '../../../redux/actions';
 import { HCUpdateHeader } from '../../layout';
-import { httpService } from '../../../api/services';
 import { ScreenName } from '../../../api/common';
+import { symptomsService } from '../../../redux/services';
 
 export const SymptomsExpand = ({ navigation }) => {
-  const { currentScreen } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
+  const { currentScreen } = useSelector((state) => state.ui);
+  const { symptoms } = useSelector((state) => state.symptoms);
   const [symptomSelected, setSymptomsSelected] = useState([]);
-  const [symptomsList, setSymptomsList] = useState([]);
-
-  const fetchSymptoms = () => {
-    httpService
-      .get('api/symptom-keyword', null, true)
-      .then((res) => {
-        if (res.data) {
-          setSymptomsList(res.data.keywords);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
   useEffect(() => {
-    fetchSymptoms();
-
-    return () => {
-      setSymptomsList([]);
-    };
+    symptomsService.getSymptoms();
   }, []);
 
   useEffect(() => {
@@ -45,8 +28,8 @@ export const SymptomsExpand = ({ navigation }) => {
 
   const itemHandler = (id) => {
     if (symptomSelected.includes(id)) {
-      const symptoms = symptomSelected.filter((item) => item !== id);
-      setSymptomsSelected(symptoms);
+      const symptomsList = symptomSelected.filter((item) => item !== id);
+      setSymptomsSelected(symptomsList);
     } else if (symptomSelected.length < 3) {
       setSymptomsSelected([...symptomSelected, id]);
     }
@@ -67,7 +50,7 @@ export const SymptomsExpand = ({ navigation }) => {
         <FlatList
           p="4"
           numColumns={3}
-          data={symptomsList}
+          data={symptoms}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <Pressable
