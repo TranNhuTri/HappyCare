@@ -17,7 +17,7 @@ import { userService } from '../../../../redux/services';
 import { ScreenName, UserDefaultProfile } from '../../../../api/common';
 import { socketService } from '../../../../api/services';
 
-export const MemberLobby = () => {
+export const MemberLobby = ({ navigation }) => {
   const dispatch = useDispatch();
   const { onlineDoctors } = useSelector((state) => state.socket);
   const { doctors } = useSelector((state) => state.role);
@@ -33,6 +33,7 @@ export const MemberLobby = () => {
 
   const onSearchHandler = () => {
     dispatch(uiActions.navigateScreen(ScreenName.searchDoctor));
+    navigation.navigate(ScreenName.searchDoctor);
   };
 
   const onSelectDoctorHandler = () => {

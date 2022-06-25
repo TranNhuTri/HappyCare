@@ -16,14 +16,9 @@ export const SymptomsExpand = ({ navigation }) => {
     symptomsService.getSymptoms();
   }, []);
 
-  useEffect(() => {
-    if (currentScreen !== ScreenName.symptomsExpand) {
-      return navigation.navigate(currentScreen);
-    }
-  }, [currentScreen, navigation]);
-
   const onBackScreenHandler = () => {
     dispatch(uiActions.navigateScreen(ScreenName.home));
+    navigation.navigate(ScreenName.home);
   };
 
   const itemHandler = (id) => {

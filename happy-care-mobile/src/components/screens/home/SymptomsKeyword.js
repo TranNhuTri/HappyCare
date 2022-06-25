@@ -21,7 +21,6 @@ import { ScreenName } from '../../../api/common';
 
 export const SymptomsKeyword = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { currentScreen } = useSelector((state) => state.ui);
   const [isShowQuestion, setIsShowQuestion] = useState(true);
   const [isShowGreat, setIsShowGreat] = useState(false);
   const [isShowNotGreat, setIsShowNotGreat] = useState(false);
@@ -31,12 +30,6 @@ export const SymptomsKeyword = ({ navigation }) => {
   useEffect(() => {
     symptomsService.getSymptoms();
   }, []);
-
-  useEffect(() => {
-    if (currentScreen !== ScreenName.home) {
-      return navigation.navigate(currentScreen);
-    }
-  }, [currentScreen, navigation]);
 
   useEffect(() => {
     const setUserInfoById = async () => {
@@ -69,6 +62,7 @@ export const SymptomsKeyword = ({ navigation }) => {
 
   const symptomsExpand = () => {
     dispatch(uiActions.navigateScreen(ScreenName.symptomsExpand));
+    navigation.navigate(ScreenName.symptomsExpand);
   };
 
   return (

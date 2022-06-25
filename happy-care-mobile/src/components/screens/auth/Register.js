@@ -1,8 +1,9 @@
 import { omit } from 'lodash';
 import * as validator from 'validator';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Center, Box, Heading, VStack, FormControl, Input, Button, Image, Text } from 'native-base';
 import { useDispatch, useSelector } from 'react-redux';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { uiActions, authActions } from '../../../redux/actions';
 import { authService } from '../../../redux/services';
 import { HCIcon } from '../../../assets/images';
@@ -11,15 +12,8 @@ import { AppName, ScreenName } from '../../../api/common';
 export const Register = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const { currentScreen } = useSelector((state) => state.ui);
   const { registerCredentials } = useSelector((state) => state.auth);
   const [errors, setErrors] = useState({});
-
-  useEffect(() => {
-    if (currentScreen !== ScreenName.register) {
-      navigation.navigate(currentScreen);
-    }
-  }, [currentScreen, navigation]);
 
   const onFormChangeHandler = (type, value) => {
     dispatch(
@@ -77,153 +71,160 @@ export const Register = ({ navigation }) => {
     return true;
   };
 
-  const onSubmitHandler = () => {
+  const onSubmitHandler = async () => {
     const isFormValid = validateFormHandler();
     if (isFormValid) {
-      dispatch(authService.registerNewUser(registerCredentials));
+      const isRegisterSuccess = authService.registerNewUser(registerCredentials);
+      if (isRegisterSuccess) {
+        dispatch(uiActions.navigateScreen(ScreenName.login));
+        navigation.navigate(ScreenName.login);
+      }
     }
   };
 
   const onNavigateLoginHandler = () => {
     dispatch(uiActions.navigateScreen(ScreenName.login));
+    navigation.navigate(ScreenName.login);
   };
 
   return (
-    <VStack bg="primary.200" alignItems="center" w="100%" h="100%">
-      <Box safeArea p="2" mt="8" w="90%" maxW="290">
-        <Center mb="8">
-          <Image mb="2" size="md" source={HCIcon.hc_icon_health_care} alt="Healthcare logo" />
+    <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }}>
+      <VStack bg="primary.200" alignItems="center" w="100%" h="100%">
+        <Box safeArea p="2" w="90%" maxW="290">
+          <Center mb="8">
+            <Image mb="2" size="md" source={HCIcon.hc_icon_health_care} alt="Healthcare logo" />
+            <Heading
+              size="xl"
+              color="coolGray.800"
+              _dark={{
+                color: 'warmGray.50',
+              }}
+              fontWeight="semibold"
+            >
+              {AppName}
+            </Heading>
+          </Center>
           <Heading
-            size="xl"
-            color="coolGray.800"
+            mb="3"
+            color="coolGray.600"
             _dark={{
-              color: 'warmGray.50',
+              color: 'warmGray.200',
             }}
-            fontWeight="semibold"
-          >
-            {AppName}
-          </Heading>
-        </Center>
-        <Heading
-          mb="3"
-          color="coolGray.600"
-          _dark={{
-            color: 'warmGray.200',
-          }}
-          fontWeight="medium"
-          size="xs"
-        >
-          {'Hãy đăng ký '}
-          <Heading
+            fontWeight="medium"
             size="xs"
-            color="coolGray.800"
-            _dark={{
-              color: 'warmGray.50',
-            }}
-            fontWeight={500}
           >
-            {AppName}
+            {'Hãy đăng ký '}
+            <Heading
+              size="xs"
+              color="coolGray.800"
+              _dark={{
+                color: 'warmGray.50',
+              }}
+              fontWeight={500}
+            >
+              {AppName}
+            </Heading>
+            {' để có một sức khoẻ tốt hơn'}
           </Heading>
-          {' để có một sức khoẻ tốt hơn'}
-        </Heading>
-        <VStack space={3}>
-          <FormControl isRequired>
-            <FormControl.Label>Email</FormControl.Label>
-            <Input
-              _light={{
-                bg: 'muted.50',
-              }}
-              _dark={{
-                bg: 'coolGray.800',
-              }}
-              _focus={{
-                bg: 'cyan.50',
-              }}
-              borderRadius="md"
-              onChangeText={(value) => onFormChangeHandler('email', value)}
-            />
-            {errors && errors.email && (
-              <FormControl.HelperText
-                ml="1"
-                _text={{
-                  fontSize: 'xs',
-                  color: 'red.500',
+          <VStack space={3}>
+            <FormControl isRequired>
+              <FormControl.Label>Email</FormControl.Label>
+              <Input
+                _light={{
+                  bg: 'muted.50',
                 }}
-              >
-                {errors && errors.email}
-              </FormControl.HelperText>
-            )}
-          </FormControl>
-          <FormControl isRequired>
-            <FormControl.Label>Password</FormControl.Label>
-            <Input
-              _light={{
-                bg: 'muted.50',
-              }}
-              _dark={{
-                bg: 'coolGray.800',
-              }}
-              _focus={{
-                bg: 'cyan.50',
-              }}
-              type="password"
-              borderRadius="md"
-              onChangeText={(value) => onFormChangeHandler('password', value)}
-            />
-            {errors && errors.password && (
-              <FormControl.HelperText
-                ml="1"
-                _text={{
-                  fontSize: 'xs',
-                  color: 'red.500',
+                _dark={{
+                  bg: 'coolGray.800',
                 }}
-              >
-                {errors && errors.password}
-              </FormControl.HelperText>
-            )}
-          </FormControl>
-          <FormControl isRequired>
-            <FormControl.Label>Confirm Password</FormControl.Label>
-            <Input
-              _light={{
-                bg: 'muted.50',
-              }}
-              _dark={{
-                bg: 'coolGray.800',
-              }}
-              _focus={{
-                bg: 'cyan.50',
-              }}
-              type="password"
-              borderRadius="md"
-              onChangeText={(value) => onFormChangeHandler('confirmPassword', value)}
-            />
-            {errors && errors.confirmPassword && (
-              <FormControl.HelperText
-                ml="1"
-                _text={{
-                  fontSize: 'xs',
-                  color: 'red.500',
+                _focus={{
+                  bg: 'cyan.50',
                 }}
-              >
-                {errors && errors.confirmPassword}
-              </FormControl.HelperText>
-            )}
-          </FormControl>
-          <Button mt="2" colorScheme="tertiary" onPress={onSubmitHandler}>
-            <Text bold fontSize="md" color="primary.100">
-              Đăng ký
+                borderRadius="md"
+                onChangeText={(value) => onFormChangeHandler('email', value)}
+              />
+              {errors && errors.email && (
+                <FormControl.HelperText
+                  ml="1"
+                  _text={{
+                    fontSize: 'xs',
+                    color: 'red.500',
+                  }}
+                >
+                  {errors && errors.email}
+                </FormControl.HelperText>
+              )}
+            </FormControl>
+            <FormControl isRequired>
+              <FormControl.Label>Password</FormControl.Label>
+              <Input
+                _light={{
+                  bg: 'muted.50',
+                }}
+                _dark={{
+                  bg: 'coolGray.800',
+                }}
+                _focus={{
+                  bg: 'cyan.50',
+                }}
+                type="password"
+                borderRadius="md"
+                onChangeText={(value) => onFormChangeHandler('password', value)}
+              />
+              {errors && errors.password && (
+                <FormControl.HelperText
+                  ml="1"
+                  _text={{
+                    fontSize: 'xs',
+                    color: 'red.500',
+                  }}
+                >
+                  {errors && errors.password}
+                </FormControl.HelperText>
+              )}
+            </FormControl>
+            <FormControl isRequired>
+              <FormControl.Label>Confirm Password</FormControl.Label>
+              <Input
+                _light={{
+                  bg: 'muted.50',
+                }}
+                _dark={{
+                  bg: 'coolGray.800',
+                }}
+                _focus={{
+                  bg: 'cyan.50',
+                }}
+                type="password"
+                borderRadius="md"
+                onChangeText={(value) => onFormChangeHandler('confirmPassword', value)}
+              />
+              {errors && errors.confirmPassword && (
+                <FormControl.HelperText
+                  ml="1"
+                  _text={{
+                    fontSize: 'xs',
+                    color: 'red.500',
+                  }}
+                >
+                  {errors && errors.confirmPassword}
+                </FormControl.HelperText>
+              )}
+            </FormControl>
+            <Button mt="2" colorScheme="tertiary" onPress={onSubmitHandler}>
+              <Text bold fontSize="md" color="primary.100">
+                Đăng ký
+              </Text>
+            </Button>
+            <Text>
+              {'Đã có tài khoản? '}
+              <Text bold fontSize="md" color="green.600" onPress={onNavigateLoginHandler}>
+                Đăng nhập
+              </Text>
+              {' ngay 🙋‍♂️'}
             </Text>
-          </Button>
-          <Text>
-            {'Đã có tài khoản? '}
-            <Text bold fontSize="md" color="green.600" onPress={onNavigateLoginHandler}>
-              Đăng nhập
-            </Text>
-            {' ngay 🙋‍♂️'}
-          </Text>
-        </VStack>
-      </Box>
-    </VStack>
+          </VStack>
+        </Box>
+      </VStack>
+    </KeyboardAwareScrollView>
   );
 };

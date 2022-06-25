@@ -1,20 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Platform } from 'react-native';
 import { VStack, HStack, Heading, KeyboardAvoidingView, Avatar } from 'native-base';
 import { useSelector } from 'react-redux';
 import { DoctorLobby } from './DoctorLobby';
 import { MemberLobby } from './MemberLobby';
-import { ScreenName, BottomBarHeight, Role } from '../../../../api/common';
+import { BottomBarHeight, Role } from '../../../../api/common';
 
 export const ChatLobby = ({ navigation }) => {
-  const { currentScreen } = useSelector((state) => state.ui);
   const { role, profile } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    if (currentScreen !== ScreenName.chatLobby) {
-      return navigation.navigate(currentScreen);
-    }
-  }, [currentScreen, navigation]);
 
   return (
     <KeyboardAvoidingView
@@ -40,7 +33,11 @@ export const ChatLobby = ({ navigation }) => {
             {role === Role.doctor ? 'Tư vấn sức khoẻ' : 'Trò chuyện'}
           </Heading>
         </HStack>
-        {role === Role.doctor ? <DoctorLobby /> : <MemberLobby />}
+        {role === Role.doctor ? (
+          <DoctorLobby navigation={navigation} />
+        ) : (
+          <MemberLobby navigation={navigation} />
+        )}
       </VStack>
     </KeyboardAvoidingView>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Text,
@@ -19,21 +19,19 @@ import { ScreenName, Role } from '../../../api/common';
 
 export const Profile = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { currentScreen } = useSelector((state) => state.ui);
   const { role, email, specializations, profile } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    if (currentScreen !== ScreenName.profile) {
-      return navigation.navigate(currentScreen);
-    }
-  }, [currentScreen, navigation]);
 
   const onUpdateProfileHandler = () => {
     dispatch(uiActions.navigateScreen(ScreenName.updateProfile));
+    navigation.navigate(ScreenName.updateProfile);
   };
 
-  const onLogoutHandler = () => {
-    dispatch(authService.logout());
+  const onLogoutHandler = async () => {
+    const isLogoutSuccess = await authService.logout();
+    if (isLogoutSuccess) {
+      dispatch(uiActions.navigateScreen(ScreenName.login));
+      navigation.navigate(ScreenName.login);
+    }
   };
   return (
     <Box>

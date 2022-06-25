@@ -25,7 +25,6 @@ import { socketService } from '../../../api/services';
 export const Login = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const { currentScreen } = useSelector((state) => state.ui);
   const { loginCredentials, isLoggedIn } = useSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState({});
@@ -42,18 +41,13 @@ export const Login = ({ navigation }) => {
         socketService.emitJoinApp({ token });
         dispatch(authActions.setLoggedInStatus(!!token));
         dispatch(uiActions.navigateScreen(ScreenName.bottomTab));
+        navigation.navigate(ScreenName.bottomTab);
       } else {
         setIsLoading(false);
       }
     }
     checkAuthentication();
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (currentScreen !== ScreenName.login) {
-      return navigation.navigate(currentScreen);
-    }
-  }, [currentScreen, navigation]);
+  }, [dispatch, navigation]);
 
   useEffect(() => {
     setIsLoading(false);
@@ -94,15 +88,20 @@ export const Login = ({ navigation }) => {
     return true;
   };
 
-  const onSubmitHandler = () => {
+  const onSubmitHandler = async () => {
     const isFormValid = validateFormHandler();
     if (isFormValid) {
-      dispatch(authService.login(loginCredentials));
+      const isLoggedSuccess = await authService.login(loginCredentials);
+      if (isLoggedSuccess) {
+        dispatch(uiActions.navigateScreen(ScreenName.bottomTab));
+        navigation.navigate(ScreenName.bottomTab);
+      }
     }
   };
 
   const onRegisterHandler = () => {
     dispatch(uiActions.navigateScreen(ScreenName.register));
+    navigation.navigate(ScreenName.register);
   };
 
   return (
