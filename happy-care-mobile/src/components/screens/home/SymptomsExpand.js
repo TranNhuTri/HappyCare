@@ -8,13 +8,17 @@ import { symptomsService } from '../../../redux/services';
 
 export const SymptomsExpand = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { currentScreen } = useSelector((state) => state.ui);
   const { symptoms } = useSelector((state) => state.symptoms);
   const [symptomSelected, setSymptomsSelected] = useState([]);
 
   useEffect(() => {
     symptomsService.getSymptoms();
   }, []);
+
+  useEffect(() => {
+    navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
+    return () => navigation.getParent()?.setOptions({ tabBarStyle: undefined });
+  }, [navigation]);
 
   const onBackScreenHandler = () => {
     dispatch(uiActions.navigateScreen(ScreenName.home));

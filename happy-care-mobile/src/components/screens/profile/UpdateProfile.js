@@ -1,6 +1,6 @@
 import { omit, get } from 'lodash';
 import * as validator from 'validator';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { VStack, Center, Avatar, Icon, FormControl, Input, ScrollView } from 'native-base';
 import { FontAwesome, Entypo, Ionicons } from '@expo/vector-icons';
@@ -24,6 +24,11 @@ export const UpdateProfile = ({ navigation }) => {
     avatar: `${get(profile, 'avatar', '')}`,
   });
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
+    return () => navigation.getParent()?.setOptions({ tabBarStyle: undefined });
+  }, [navigation]);
 
   const onBackScreenHandler = () => {
     dispatch(uiActions.navigateScreen(ScreenName.profile));

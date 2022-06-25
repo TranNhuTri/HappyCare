@@ -33,6 +33,11 @@ export const SearchDoctor = ({ navigation }) => {
     specService.getAllSpecs();
   }, []);
 
+  useEffect(() => {
+    navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
+    return () => navigation.getParent()?.setOptions({ tabBarStyle: undefined });
+  }, [navigation]);
+
   const onBackScreenHandler = () => {
     dispatch(uiActions.navigateScreen(ScreenName.chatLobby));
     navigation.navigate(ScreenName.chatLobby);
