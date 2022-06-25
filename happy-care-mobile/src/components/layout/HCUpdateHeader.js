@@ -6,7 +6,12 @@ export const HCUpdateHeader = (props) => {
   const { onBackScreenHandler, onSaveHandler, headerTitle } = props;
 
   return (
-    <HStack w="100%" h="50px" justifyContent="space-between" alignItems="center">
+    <HStack
+      w="100%"
+      h="50px"
+      justifyContent={onSaveHandler ? 'space-beetween' : 'flex-start'}
+      alignItems="center"
+    >
       <IconButton
         icon={<Icon as={Entypo} name="chevron-left" />}
         borderRadius="full"
@@ -26,36 +31,38 @@ export const HCUpdateHeader = (props) => {
       />
       <Heading
         size="md"
-        color="coolGray.800"
         _dark={{
           color: 'warmGray.50',
         }}
         fontWeight={600}
+        lineHeight="md"
       >
         {headerTitle}
       </Heading>
-      <IconButton
-        icon={<Icon as={Entypo} name="save" />}
-        borderRadius="full"
-        onPress={onSaveHandler}
-        _icon={{
-          color: 'black',
-          size: 'md',
-        }}
-        _pressed={{
-          bg: 'blue.200:alpha.20',
-          _ios: {
+      {onSaveHandler && (
+        <IconButton
+          icon={<Icon as={Entypo} name="save" />}
+          borderRadius="full"
+          onPress={onSaveHandler}
+          _icon={{
+            color: 'black',
+            size: 'md',
+          }}
+          _pressed={{
+            bg: 'blue.200:alpha.20',
+            _ios: {
+              _icon: {
+                size: '2xl',
+              },
+            },
+          }}
+          _ios={{
             _icon: {
               size: '2xl',
             },
-          },
-        }}
-        _ios={{
-          _icon: {
-            size: '2xl',
-          },
-        }}
-      />
+          }}
+        />
+      )}
     </HStack>
   );
 };

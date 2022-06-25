@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Home, SymptomsExpand } from '../screens';
+import { Home, SymptomsExpand, SearchSpecializations } from '../screens';
 import { ScreenName } from '../../api/common';
 
 const Stack = createStackNavigator();
@@ -17,6 +17,13 @@ const HomeNavigation = () => (
     <Stack.Screen
       name={ScreenName.symptomsExpand}
       component={SymptomsExpand}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen
+      name={ScreenName.searchSpecializations}
+      component={SearchSpecializations}
       options={{
         headerShown: false,
       }}

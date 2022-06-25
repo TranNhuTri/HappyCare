@@ -24,7 +24,7 @@ export const SymptomsKeyword = ({ navigation }) => {
   const [isShowQuestion, setIsShowQuestion] = useState(true);
   const [isShowGreat, setIsShowGreat] = useState(false);
   const [isShowNotGreat, setIsShowNotGreat] = useState(false);
-  const [symptomSelected, setSymptomsSelected] = useState([]);
+  const [symptomIdsSelected, setSymptomIdsSelected] = useState([]);
   const { symptoms } = useSelector((state) => state.symptoms);
 
   useEffect(() => {
@@ -48,16 +48,17 @@ export const SymptomsKeyword = ({ navigation }) => {
   };
 
   const itemHandler = (id) => {
-    if (symptomSelected.includes(id)) {
-      const symptomsList = symptomSelected.filter((item) => item !== id);
-      setSymptomsSelected(symptomsList);
-    } else if (symptomSelected.length < 3) {
-      setSymptomsSelected([...symptomSelected, id]);
+    if (symptomIdsSelected.includes(id)) {
+      const symptomsList = symptomIdsSelected.filter((item) => item !== id);
+      setSymptomIdsSelected(symptomsList);
+    } else if (symptomIdsSelected.length < 3) {
+      setSymptomIdsSelected([...symptomIdsSelected, id]);
     }
   };
 
   const searchDoctor = () => {
-    console.log(symptomSelected);
+    dispatch(uiActions.navigateScreen(ScreenName.searchSpecializations));
+    navigation.navigate(ScreenName.searchSpecializations, { symptomIdsSelected });
   };
 
   const symptomsExpand = () => {
@@ -70,10 +71,10 @@ export const SymptomsKeyword = ({ navigation }) => {
       <VStack w="100%" px="4" pt="2" pb="0">
         {isShowQuestion && (
           <VStack pb="4" w="100%">
-            <Text fontSize="xl" bold color="purple.600">
+            <Text fontSize="xl" bold color="blue.700">
               Hôm nay,
             </Text>
-            <Text fontSize="xl" bold color="purple.600">
+            <Text fontSize="xl" bold color="blue.700">
               bạn cảm thấy như thế nào ?
             </Text>
             <HStack space={2} justifyContent="center">
@@ -84,7 +85,7 @@ export const SymptomsKeyword = ({ navigation }) => {
                 shadow="1"
                 borderRadius="md"
                 _pressed={{
-                  bg: 'purple.600',
+                  bg: 'blue.700',
                 }}
                 onPress={() => handlerButtonClick(true)}
               >
@@ -103,7 +104,7 @@ export const SymptomsKeyword = ({ navigation }) => {
                 borderRadius="md"
                 shadow="1"
                 _pressed={{
-                  bg: 'purple.600',
+                  bg: 'blue.700',
                 }}
                 onPress={() => handlerButtonClick(false)}
               >
@@ -119,21 +120,21 @@ export const SymptomsKeyword = ({ navigation }) => {
         )}
 
         {isShowGreat && (
-          <VStack pb="4" w="100%" >
-            <Text fontSize="xl" bold color="purple.600">
+          <VStack pb="4" w="100%">
+            <Text fontSize="xl" bold color="blue.700">
               Chúc bạn ngày mới tốt lành!!!
             </Text>
             <Center p="4">
               <Image size={120} alt="love" source={require('../../../assets/images/love.png')} />
             </Center>
-            <Text fontSize="lg" bold color="purple.600">
+            <Text fontSize="lg" bold color="blue.700">
               Tìm kiếm bác sĩ
             </Text>
             <Input
               _focus={{
                 bg: 'white',
                 borderWidth: '1',
-                borderColor: 'purple.600',
+                borderColor: 'blue.700',
               }}
               borderWidth="0"
               backgroundColor="purple.200"
@@ -147,7 +148,7 @@ export const SymptomsKeyword = ({ navigation }) => {
                   minWidth="25px"
                   size={4}
                   ml="4"
-                  color="purple.600"
+                  color="blue.700"
                 />
               }
             />
@@ -156,8 +157,8 @@ export const SymptomsKeyword = ({ navigation }) => {
 
         {isShowNotGreat && (
           <VStack pb="4" w="100%">
-            <Text fontSize="xl" bold color="purple.600">
-              Triệu chứng của bạn là gì? ({symptomSelected.length}/3)
+            <Text fontSize="xl" bold color="blue.700">
+              Triệu chứng của bạn là gì? ({symptomIdsSelected.length}/3)
             </Text>
             <FlatList
               p="4"
@@ -166,7 +167,7 @@ export const SymptomsKeyword = ({ navigation }) => {
               keyExtractor={(item) => item._id}
               renderItem={({ item }) => (
                 <Pressable
-                  bg={symptomSelected.includes(item._id) ? 'purple.600' : '#dddddd'}
+                  bg={symptomIdsSelected.includes(item._id) ? 'blue.700' : '#dddddd'}
                   h="10"
                   alignItems="center"
                   justifyContent="center"
@@ -182,7 +183,7 @@ export const SymptomsKeyword = ({ navigation }) => {
                   }}
                   onPress={() => itemHandler(item._id)}
                 >
-                  <Text color={symptomSelected.includes(item._id) ? '#dddddd' : 'black'}>
+                  <Text color={symptomIdsSelected.includes(item._id) ? '#dddddd' : 'black'}>
                     {item.name}
                   </Text>
                 </Pressable>
@@ -193,12 +194,12 @@ export const SymptomsKeyword = ({ navigation }) => {
               mt="1"
               mx="auto"
               _text={{
-                color: 'purple.600',
+                color: 'blue.700',
                 fontSize: '14px',
               }}
               _pressed={{
                 _text: { color: 'white' },
-                bg: 'purple.600',
+                bg: 'blue.700',
               }}
               onPress={symptomsExpand}
             >
@@ -209,7 +210,7 @@ export const SymptomsKeyword = ({ navigation }) => {
               p="2"
               mt="2"
               mx="auto"
-              borderTopColor="purple.600"
+              borderTopColor="blue.700"
               borderTopWidth={1}
             >
               <Button
@@ -218,15 +219,15 @@ export const SymptomsKeyword = ({ navigation }) => {
                 alignItems="center"
                 borderRadius="md"
                 _text={{
-                  color: 'purple.600',
+                  color: 'blue.700',
                   fontSize: '14px',
                 }}
                 _pressed={{
                   _text: { color: 'white' },
-                  bg: 'purple.600',
+                  bg: 'blue.700',
                 }}
                 onPress={searchDoctor}
-                isDisabled={symptomSelected.length !== 3}
+                isDisabled={symptomIdsSelected.length === 0}
               >
                 Tìm kiếm bác sĩ
               </Button>

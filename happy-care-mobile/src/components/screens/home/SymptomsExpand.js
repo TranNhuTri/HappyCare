@@ -9,7 +9,7 @@ import { symptomsService } from '../../../redux/services';
 export const SymptomsExpand = ({ navigation }) => {
   const dispatch = useDispatch();
   const { symptoms } = useSelector((state) => state.symptoms);
-  const [symptomSelected, setSymptomsSelected] = useState([]);
+  const [symptomIdsSelected, setSymptomsSelected] = useState([]);
 
   useEffect(() => {
     symptomsService.getSymptoms();
@@ -26,22 +26,23 @@ export const SymptomsExpand = ({ navigation }) => {
   };
 
   const itemHandler = (id) => {
-    if (symptomSelected.includes(id)) {
-      const symptomsList = symptomSelected.filter((item) => item !== id);
+    if (symptomIdsSelected.includes(id)) {
+      const symptomsList = symptomIdsSelected.filter((item) => item !== id);
       setSymptomsSelected(symptomsList);
-    } else if (symptomSelected.length < 3) {
-      setSymptomsSelected([...symptomSelected, id]);
+    } else if (symptomIdsSelected.length < 3) {
+      setSymptomsSelected([...symptomIdsSelected, id]);
     }
   };
 
   const searchDoctor = () => {
-    console.log(symptomSelected);
+    dispatch(uiActions.navigateScreen(ScreenName.searchSpecializations));
+    navigation.navigate(ScreenName.searchSpecializations, { symptomIdsSelected });
   };
 
   return (
     <VStack w="100%" h="100%">
       <HCUpdateHeader
-        headerTitle={`Triệu chứng của bạn là gì? (${symptomSelected.length})/3`}
+        headerTitle={`Triệu chứng của bạn là gì? (${symptomIdsSelected.length})/3`}
         onBackScreenHandler={onBackScreenHandler}
       />
 
@@ -53,7 +54,7 @@ export const SymptomsExpand = ({ navigation }) => {
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <Pressable
-              bg={symptomSelected.includes(item._id) ? 'purple.600' : '#dddddd'}
+              bg={symptomIdsSelected.includes(item._id) ? 'blue.700' : '#dddddd'}
               h="10"
               alignItems="center"
               justifyContent="center"
@@ -69,7 +70,7 @@ export const SymptomsExpand = ({ navigation }) => {
               }}
               onPress={() => itemHandler(item._id)}
             >
-              <Text color={symptomSelected.includes(item._id) ? '#dddddd' : 'black'}>
+              <Text color={symptomIdsSelected.includes(item._id) ? '#dddddd' : 'black'}>
                 {item.name}
               </Text>
             </Pressable>
@@ -83,15 +84,15 @@ export const SymptomsExpand = ({ navigation }) => {
           mx="auto"
           shadow="1"
           _text={{
-            color: 'purple.600',
+            color: 'blue.700',
             fontSize: '14px',
           }}
           _pressed={{
             _text: { color: 'white' },
-            bg: 'purple.600',
+            bg: 'blue.700',
           }}
           onPress={searchDoctor}
-          isDisabled={symptomSelected.length !== 3}
+          isDisabled={symptomIdsSelected.length === 0}
         >
           Tìm kiếm bác sĩ
         </Button>
